@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - SECRET_KEY=your-secret-key-change-in-production
+      - DEBUG=True
+      - GRAPHQL_PLAYGROUND=True
+    depends_on:
+      - redis
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - crehana_network
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - crehana_network
+
+  graphql-playground:
+    image: graphql/playground:latest
+    ports:
+      - "4000:4000"
+    environment:
+      - GRAPHQL_ENDPOINT=http://localhost:8000/graphql
+    depends_on:
+      - web
+    networks:
+      - crehana_network
+
+volumes:
+  redis_data:
+
+networks:
+  crehana_network:
+    driver: bridge
