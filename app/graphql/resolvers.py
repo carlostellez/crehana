@@ -22,10 +22,10 @@ task_service = task_service_instance
 def convert_to_graphql_task(pydantic_task) -> Task:
     """
     Convert a Pydantic Task to GraphQL Task.
-    
+
     Args:
         pydantic_task: The Pydantic task model
-        
+
     Returns:
         Task: The GraphQL task type
     """
@@ -88,7 +88,7 @@ class Query:
     def task_strict(self, task_id: int) -> Task:
         """
         Get a specific task by ID with strict error handling.
-        
+
         This method raises a GraphQL error if the task is not found,
         providing explicit error information in the response.
 
@@ -186,7 +186,7 @@ class Mutation:
     def update_task_strict(self, task_id: int, task_input: TaskUpdateInput) -> Task:
         """
         Update an existing task with strict error handling.
-        
+
         This method raises a GraphQL error if the task is not found,
         providing explicit error information in the response.
 
@@ -246,7 +246,7 @@ class Mutation:
     def delete_task_strict(self, task_id: int) -> bool:
         """
         Delete a task with strict error handling.
-        
+
         This method raises a GraphQL error if the task is not found,
         providing explicit error information in the response.
 

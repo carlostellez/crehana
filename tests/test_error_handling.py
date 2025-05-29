@@ -26,7 +26,7 @@ class TestRESTErrorHandling:
     def test_get_nonexistent_task_returns_404(self):
         """Test that getting a non-existent task returns 404."""
         response = client.get("/api/v1/tasks/999")
-        
+
         assert response.status_code == 404
         data = response.json()
         assert "detail" in data
@@ -38,9 +38,9 @@ class TestRESTErrorHandling:
             "title": "Updated Task",
             "completed": True
         }
-        
+
         response = client.put("/api/v1/tasks/999", json=update_data)
-        
+
         assert response.status_code == 404
         data = response.json()
         assert "detail" in data
@@ -49,7 +49,7 @@ class TestRESTErrorHandling:
     def test_delete_nonexistent_task_returns_404(self):
         """Test that deleting a non-existent task returns 404."""
         response = client.delete("/api/v1/tasks/999")
-        
+
         assert response.status_code == 404
         data = response.json()
         assert "detail" in data
@@ -63,25 +63,25 @@ class TestRESTErrorHandling:
             "description": "Test description",
             "completed": False
         }
-        
+
         response = client.post("/api/v1/tasks/", json=create_data)
         assert response.status_code == 201
         task = response.json()
         task_id = task["id"]
-        
+
         # Get the task (should work)
         response = client.get(f"/api/v1/tasks/{task_id}")
         assert response.status_code == 200
-        
+
         # Update the task (should work)
         update_data = {"completed": True}
         response = client.put(f"/api/v1/tasks/{task_id}", json=update_data)
         assert response.status_code == 200
-        
+
         # Delete the task (should work)
         response = client.delete(f"/api/v1/tasks/{task_id}")
         assert response.status_code == 204
-        
+
         # Try to get deleted task (should return 404)
         response = client.get(f"/api/v1/tasks/{task_id}")
         assert response.status_code == 404
@@ -102,10 +102,10 @@ class TestGraphQLErrorHandling:
             }
         }
         """
-        
+
         response = client.post("/graphql", json={"query": query})
         assert response.status_code == 200
-        
+
         data = response.json()
         assert "data" in data
         assert data["data"]["task"] is None
@@ -123,14 +123,14 @@ class TestGraphQLErrorHandling:
             }
         }
         """
-        
+
         response = client.post("/graphql", json={"query": query})
         assert response.status_code == 200
-        
+
         data = response.json()
         assert "errors" in data
         assert len(data["errors"]) > 0
-        
+
         error = data["errors"][0]
         assert "Task with ID 999 not found" in error["message"]
         assert "extensions" in error
@@ -153,10 +153,10 @@ class TestGraphQLErrorHandling:
             }
         }
         """
-        
+
         response = client.post("/graphql", json={"query": mutation})
         assert response.status_code == 200
-        
+
         data = response.json()
         assert "data" in data
         assert data["data"]["updateTask"] is None
@@ -177,14 +177,14 @@ class TestGraphQLErrorHandling:
             }
         }
         """
-        
+
         response = client.post("/graphql", json={"query": mutation})
         assert response.status_code == 200
-        
+
         data = response.json()
         assert "errors" in data
         assert len(data["errors"]) > 0
-        
+
         error = data["errors"][0]
         assert "Task with ID 999 not found" in error["message"]
         assert "extensions" in error
@@ -198,10 +198,10 @@ class TestGraphQLErrorHandling:
             deleteTask(taskId: 999)
         }
         """
-        
+
         response = client.post("/graphql", json={"query": mutation})
         assert response.status_code == 200
-        
+
         data = response.json()
         assert "data" in data
         assert data["data"]["deleteTask"] is False
@@ -214,14 +214,14 @@ class TestGraphQLErrorHandling:
             deleteTaskStrict(taskId: 999)
         }
         """
-        
+
         response = client.post("/graphql", json={"query": mutation})
         assert response.status_code == 200
-        
+
         data = response.json()
         assert "errors" in data
         assert len(data["errors"]) > 0
-        
+
         error = data["errors"][0]
         assert "Task with ID 999 not found" in error["message"]
         assert "extensions" in error
@@ -244,13 +244,13 @@ class TestGraphQLErrorHandling:
             }
         }
         """
-        
+
         response = client.post("/graphql", json={"query": mutation_create})
         assert response.status_code == 200
-        
+
         data = response.json()
         task_id = data["data"]["createTask"]["id"]
-        
+
         # Test regular task query
         query_regular = f"""
         query {{
@@ -261,13 +261,13 @@ class TestGraphQLErrorHandling:
             }}
         }}
         """
-        
+
         response = client.post("/graphql", json={"query": query_regular})
         assert response.status_code == 200
         data = response.json()
         assert data["data"]["task"] is not None
         assert data["data"]["task"]["id"] == task_id
-        
+
         # Test strict task query
         query_strict = f"""
         query {{
@@ -278,7 +278,7 @@ class TestGraphQLErrorHandling:
             }}
         }}
         """
-        
+
         response = client.post("/graphql", json={"query": query_strict})
         assert response.status_code == 200
         data = response.json()
@@ -296,7 +296,7 @@ class TestErrorHandlingComparison:
         rest_response = client.get("/api/v1/tasks/999")
         assert rest_response.status_code == 404
         rest_data = rest_response.json()
-        
+
         # GraphQL error response (strict mode)
         graphql_query = """
         query {
@@ -306,15 +306,15 @@ class TestErrorHandlingComparison:
             }
         }
         """
-        
+
         graphql_response = client.post("/graphql", json={"query": graphql_query})
         assert graphql_response.status_code == 200  # GraphQL always returns 200
         graphql_data = graphql_response.json()
-        
+
         # Verify REST error format
         assert "detail" in rest_data
         assert "Task with ID 999 not found" in rest_data["detail"]
-        
+
         # Verify GraphQL error format
         assert "errors" in graphql_data
         assert "data" in graphql_data
@@ -323,11 +323,11 @@ class TestErrorHandlingComparison:
         assert "extensions" in error
         assert error["extensions"]["code"] == "TASK_NOT_FOUND"
         assert error["extensions"]["http_status"] == 404
-        
+
         print("\n=== REST Error Response ===")
         print(f"Status Code: {rest_response.status_code}")
         print(f"Response: {rest_data}")
-        
+
         print("\n=== GraphQL Error Response ===")
         print(f"Status Code: {graphql_response.status_code}")
         print(f"Response: {graphql_data}") 
