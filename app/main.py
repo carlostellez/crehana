@@ -94,7 +94,11 @@ app.include_router(graphql_app, prefix="/graphql")
 async def graphql_query(
     query_data: Dict[str, Any] = Body(
         ...,
-        examples={"default": {"value": {"query": "{ tasks { id title description completed } }"}}},
+        examples={
+            "default": {
+                "value": {"query": "{ tasks { id title description completed } }"}
+            }
+        },
         description="GraphQL query or mutation",
     )
 ):

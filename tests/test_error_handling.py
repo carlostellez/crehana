@@ -8,8 +8,8 @@ to error handling in both REST and GraphQL APIs.
 import pytest
 from fastapi.testclient import TestClient
 
-from app.services import task_service_instance
 from app.main import app
+from app.services import task_service_instance
 
 client = TestClient(app)
 
@@ -34,10 +34,7 @@ class TestRESTErrorHandling:
 
     def test_update_nonexistent_task_returns_404(self):
         """Test that updating a non-existent task returns 404."""
-        update_data = {
-            "title": "Updated Task",
-            "completed": True
-        }
+        update_data = {"title": "Updated Task", "completed": True}
 
         response = client.put("/api/v1/tasks/999", json=update_data)
 
@@ -61,7 +58,7 @@ class TestRESTErrorHandling:
         create_data = {
             "title": "Test Task",
             "description": "Test description",
-            "completed": False
+            "completed": False,
         }
 
         response = client.post("/api/v1/tasks/", json=create_data)

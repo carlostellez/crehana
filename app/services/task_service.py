@@ -8,8 +8,8 @@ business logic and operations.
 from datetime import datetime
 from typing import List, Optional
 
-from app.models.task import Task, TaskCreate, TaskUpdate
 from app.models.exceptions import TaskNotFoundException
+from app.models.task import Task, TaskCreate, TaskUpdate
 
 
 class TaskService:

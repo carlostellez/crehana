@@ -10,8 +10,8 @@ from typing import List
 from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 
-from app.models.task import Task, TaskCreate, TaskUpdate
 from app.models.exceptions import TaskNotFoundException
+from app.models.task import Task, TaskCreate, TaskUpdate
 from app.services import task_service_instance
 
 # Create router instance

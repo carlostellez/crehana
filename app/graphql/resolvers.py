@@ -11,8 +11,8 @@ import strawberry
 from strawberry.exceptions import GraphQLError
 
 from app.graphql.types import Task, TaskInput, TaskUpdateInput
-from app.models.task import TaskCreate, TaskUpdate
 from app.models.exceptions import TaskNotFoundException
+from app.models.task import TaskCreate, TaskUpdate
 from app.services import task_service_instance
 
 # Use the singleton task service instance
@@ -102,18 +102,16 @@ class Query:
             GraphQLError: If the task is not found
         """
         try:
-            return convert_to_graphql_task(
-                task_service.get_task_by_id_or_404(task_id)
-            )
+            return convert_to_graphql_task(task_service.get_task_by_id_or_404(task_id))
         except TaskNotFoundException as e:
             raise GraphQLError(
                 message=str(e.detail),
                 extensions={
                     "code": "TASK_NOT_FOUND",
                     "task_id": task_id,
-                    "http_status": e.status_code
-                }
-            )
+                    "http_status": e.status_code,
+                },
+            ) from e
 
 
 @strawberry.type
@@ -225,9 +223,9 @@ class Mutation:
                 extensions={
                     "code": "TASK_NOT_FOUND",
                     "task_id": task_id,
-                    "http_status": e.status_code
-                }
-            )
+                    "http_status": e.status_code,
+                },
+            ) from e
 
     @strawberry.mutation
     def delete_task(self, task_id: int) -> bool:
@@ -267,6 +265,6 @@ class Mutation:
                 extensions={
                     "code": "TASK_NOT_FOUND",
                     "task_id": task_id,
-                    "http_status": e.status_code
-                }
-            )
+                    "http_status": e.status_code,
+                },
+            ) from e
