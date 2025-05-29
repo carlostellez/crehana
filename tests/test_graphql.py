@@ -8,7 +8,7 @@ using Strawberry GraphQL with FastAPI.
 import pytest
 from fastapi.testclient import TestClient
 from app.main import app
-from app.services.task_service import TaskService
+from app.graphql.resolvers import task_service
 
 client = TestClient(app)
 
@@ -16,9 +16,8 @@ client = TestClient(app)
 @pytest.fixture(autouse=True)
 def clear_tasks():
     """Clear all tasks before each test to ensure clean state."""
-    task_service = TaskService()
-    task_service.tasks.clear()
-    task_service.next_id = 1
+    # Access the global task service instance used by resolvers
+    task_service.tasks_data.clear()
 
 
 class TestGraphQLQueries:
