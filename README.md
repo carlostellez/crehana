@@ -54,6 +54,30 @@ make dev
 
 ### Example Usage (GraphQL Playground)
 
+**Get all tasks:**
+```graphql
+query {
+  tasks {
+    id
+    title
+    description
+    completed
+  }
+}
+```
+
+**Get task by ID:**
+```graphql
+query {
+  task(taskId: 1) { 
+    id 
+    title 
+    description 
+    completed
+  } 
+}
+```
+
 **Create a task:**
 ```graphql
 mutation {
@@ -70,17 +94,31 @@ mutation {
 }
 ```
 
-**Get all tasks:**
+**Update task:**
 ```graphql
-query {
-  tasks {
-    id
-    title
-    description
-    completed
-  }
+mutation { 
+  updateTask(
+    taskId: 1, 
+    taskInput: { 
+      title: "Updated Task", 
+      completed: true 
+    }
+  ) { 
+    id 
+    title 
+    description 
+    completed 
+  } 
 }
 ```
+
+**Delete task:**
+```graphql
+mutation { 
+  deleteTask(taskId: 1) 
+}
+```
+
 
 ## 📁 Project Structure
 
