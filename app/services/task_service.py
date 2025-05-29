@@ -9,6 +9,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from app.models.task import Task, TaskCreate, TaskUpdate
+from app.models.exceptions import TaskNotFoundException
 
 
 class TaskService:
@@ -64,6 +65,24 @@ class TaskService:
                 completed=task_dict["completed"],
             )
         return None
+
+    def get_task_by_id_or_404(self, task_id: int) -> Task:
+        """
+        Retrieve a specific task by ID or raise 404 exception.
+
+        Args:
+            task_id: The ID of the task to retrieve
+
+        Returns:
+            Task: The task if found
+
+        Raises:
+            TaskNotFoundException: If the task is not found
+        """
+        task = self.get_task_by_id(task_id)
+        if not task:
+            raise TaskNotFoundException(task_id)
+        return task
 
     def create_task(self, task_data: TaskCreate) -> Task:
         """
@@ -123,6 +142,25 @@ class TaskService:
             completed=task_dict["completed"],
         )
 
+    def update_task_or_404(self, task_id: int, task_data: TaskUpdate) -> Task:
+        """
+        Update an existing task or raise 404 exception.
+
+        Args:
+            task_id: The ID of the task to update
+            task_data: The task data to update
+
+        Returns:
+            Task: The updated task
+
+        Raises:
+            TaskNotFoundException: If the task is not found
+        """
+        task = self.update_task(task_id, task_data)
+        if not task:
+            raise TaskNotFoundException(task_id)
+        return task
+
     def delete_task(self, task_id: int) -> bool:
         """
         Delete a task.
@@ -140,3 +178,21 @@ class TaskService:
             self.tasks_data.pop(task_index)
             return True
         return False
+
+    def delete_task_or_404(self, task_id: int) -> bool:
+        """
+        Delete a task or raise 404 exception.
+
+        Args:
+            task_id: The ID of the task to delete
+
+        Returns:
+            bool: True if task was deleted
+
+        Raises:
+            TaskNotFoundException: If the task is not found
+        """
+        success = self.delete_task(task_id)
+        if not success:
+            raise TaskNotFoundException(task_id)
+        return success

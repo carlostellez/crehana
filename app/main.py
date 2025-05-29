@@ -1,8 +1,8 @@
 """
-FastAPI TodoList application with GraphQL endpoints using Strawberry.
+FastAPI TodoList application with GraphQL and REST endpoints.
 
-This module contains the main FastAPI application with GraphQL
-functionality for TodoList operations.
+This module contains the main FastAPI application with both GraphQL
+and REST API functionality for TodoList operations.
 """
 
 from typing import Any, Dict
@@ -13,11 +13,12 @@ from fastapi.responses import HTMLResponse
 from strawberry.fastapi import GraphQLRouter
 
 from app.graphql.schema import schema
+from app.routers import tasks_router
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="Crehana TodoList GraphQL API",
-    description="A TodoList API with GraphQL endpoints using Strawberry",
+    title="Crehana TodoList API",
+    description="A TodoList API with both GraphQL and REST endpoints using FastAPI",
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
@@ -32,13 +33,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Create GraphQL router with GraphQL IDE enabled
-graphql_app = GraphQLRouter(
-    schema, graphql_ide="graphiql", path="/graphql"  # Enable GraphiQL interface
-)
+# Include REST API router
+app.include_router(tasks_router)
+
+# Create GraphQL router
+graphql_app = GraphQLRouter(schema)
 
 # Include GraphQL router
-app.include_router(graphql_app, prefix="")
+app.include_router(graphql_app, prefix="/graphql")
 
 
 # Add a custom GraphQL endpoint for better Swagger documentation
