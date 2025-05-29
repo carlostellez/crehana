@@ -149,6 +149,8 @@ make docker-check  # Run all checks in Docker
 - ✅ Hot reload for development
 - ✅ GraphQL Playground interface
 - ✅ Health checks and monitoring
+- ✅ Modern Pydantic v2 configuration
+- ✅ Updated Strawberry GraphQL configuration
 
 ## 🔧 Troubleshooting
 
@@ -182,7 +184,3 @@ python -c "import fastapi, pytest, pylint; print('✅ All imports OK')"
 3. Make your changes
 4. Run quality checks: `make check`
 5. Submit a pull request
-
-## 📄 License
-
-MIT License
