@@ -30,7 +30,7 @@ A TodoList GraphQL API built with FastAPI and Strawberry GraphQL following moder
 ## 📋 Prerequisites
 
 - Docker and Docker Compose installed
-- Python 3.8+ (for local development)
+- Python 3.11
 - Git
 
 ## 🐍 Python Version Compatibility
@@ -41,7 +41,7 @@ This project supports the following Python versions:
 - **Python 3.8** (minimum required)
 - **Python 3.9** 
 - **Python 3.10** 
-- **Python 3.11** (recommended)
+- **Python 3.11** (recommended for production)
 
 ### 🎯 Recommendations
 - **For local development**: Python 3.10 or 3.11 (better performance and features)
@@ -68,11 +68,58 @@ python --version
 python3 --version
 ```
 
+### 🛠️ Troubleshooting Import Issues
+
+If you encounter import errors like `Unable to import 'fastapi'` or `ModuleNotFoundError: No module named 'strawberry'`:
+
+#### **1. Virtual Environment Issues**
+```bash
+# Check current Python version
+python --version
+
+# If using wrong version, recreate virtual environment
+rm -rf .venv
+python3.11 -m venv .venv  # Use Python 3.11
+source .venv/bin/activate
+
+# Reinstall dependencies
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+#### **2. IDE Configuration**
+- **VS Code**: `Cmd+Shift+P` → "Python: Select Interpreter" → choose `.venv/bin/python`
+- **PyCharm**: Settings → Project → Python Interpreter → Add → Existing Environment → `.venv/bin/python`
+
+#### **3. Verify Installation**
+```bash
+# Activate virtual environment
+source .venv/bin/activate
+
+# Test imports
+python -c "from fastapi.testclient import TestClient; print('✅ FastAPI OK')"
+python -c "import strawberry; print('✅ Strawberry OK')"
+python -c "from app.main import app; print('✅ App OK')"
+```
+
+#### **4. Common Solutions**
+```bash
+# Clean installation
+make clean
+make install
+
+# Or manual cleanup
+rm -rf .venv __pycache__ .pytest_cache
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
 ## 🚀 Quick Start
 
 ### 1. Clone the repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/carlostellez/crehana.git
 cd crehana
 ```
 
@@ -185,8 +232,8 @@ input TaskUpdateInput {
 
 ### 1. Create virtual environment
 ```bash
-python3.10 -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+python3.11 -m venv .env
+source .env/bin/activate  # On Windows: .venv\Scripts\activate
 ```
 
 ### 2. Install dependencies
