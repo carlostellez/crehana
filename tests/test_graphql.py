@@ -8,8 +8,8 @@ using Strawberry GraphQL with FastAPI.
 import pytest
 from fastapi.testclient import TestClient
 
-from app.services import task_service_instance
 from app.main import app
+from app.services import task_service_instance
 
 client = TestClient(app)
 

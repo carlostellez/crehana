@@ -10,8 +10,8 @@ from typing import List
 from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 
-from app.models.task import Task, TaskCreate, TaskUpdate
 from app.models.exceptions import TaskNotFoundException
+from app.models.task import Task, TaskCreate, TaskUpdate
 from app.services import task_service_instance
 
 # Create router instance
@@ -143,4 +143,4 @@ async def delete_task(task_id: int) -> None:
         HTTPException: 404 if task is not found
     """
     task_service.delete_task_or_404(task_id)
-    return None 
+    return None

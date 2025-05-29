@@ -24,7 +24,7 @@ class TaskNotFoundException(HTTPException):
         """
         super().__init__(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Task with ID {task_id} not found"
+            detail=f"Task with ID {task_id} not found",
         )
 
 
@@ -42,7 +42,4 @@ class TaskValidationException(HTTPException):
         Args:
             message: The validation error message
         """
-        super().__init__(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=message
-        ) 
+        super().__init__(status_code=status.HTTP_400_BAD_REQUEST, detail=message)
