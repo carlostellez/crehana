@@ -11,14 +11,14 @@ from fastapi import HTTPException, status
 class TaskNotFoundException(HTTPException):
     """
     Exception raised when a task is not found by ID.
-    
+
     This exception automatically maps to HTTP 404 status code.
     """
-    
+
     def __init__(self, task_id: int):
         """
         Initialize the TaskNotFoundException.
-        
+
         Args:
             task_id: The ID of the task that was not found
         """
@@ -31,14 +31,14 @@ class TaskNotFoundException(HTTPException):
 class TaskValidationException(HTTPException):
     """
     Exception raised when task validation fails.
-    
+
     This exception automatically maps to HTTP 400 status code.
     """
-    
+
     def __init__(self, message: str):
         """
         Initialize the TaskValidationException.
-        
+
         Args:
             message: The validation error message
         """
