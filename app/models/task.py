@@ -9,7 +9,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class TaskStatus(str, Enum):
@@ -68,10 +68,5 @@ class Task(TaskBase):
     """
 
     id: int
-
-    class Config:
-        """
-        Pydantic configuration.
-        """
-
-        from_attributes = True
+    
+    model_config = ConfigDict(from_attributes=True)

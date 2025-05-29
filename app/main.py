@@ -32,9 +32,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Create GraphQL router with GraphiQL enabled
+# Create GraphQL router with GraphQL IDE enabled
 graphql_app = GraphQLRouter(
-    schema, graphiql=True, path="/graphql"  # Enable GraphiQL interface
+    schema, graphql_ide="graphiql", path="/graphql"  # Enable GraphiQL interface
 )
 
 # Include GraphQL router
@@ -92,7 +92,7 @@ app.include_router(graphql_app, prefix="")
 async def graphql_query(
     query_data: Dict[str, Any] = Body(
         ...,
-        example={"query": "{ tasks { id title description completed } }"},
+        examples={"default": {"value": {"query": "{ tasks { id title description completed } }"}}},
         description="GraphQL query or mutation",
     )
 ):
