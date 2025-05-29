@@ -7,8 +7,9 @@ using Strawberry GraphQL with FastAPI.
 
 import pytest
 from fastapi.testclient import TestClient
-from app.main import app
+
 from app.graphql.resolvers import task_service
+from app.main import app
 
 client = TestClient(app)
 
@@ -22,7 +23,7 @@ def clear_tasks():
 
 class TestGraphQLQueries:
     """Test GraphQL query operations."""
-    
+
     def test_get_all_tasks_empty(self):
         """Test getting all tasks when list is empty."""
         query = """
@@ -35,15 +36,15 @@ class TestGraphQLQueries:
             }
         }
         """
-        
+
         response = client.post("/graphql", json={"query": query})
         assert response.status_code == 200
-        
+
         data = response.json()
         assert "data" in data
         assert "tasks" in data["data"]
         assert data["data"]["tasks"] == []
-    
+
     def test_get_task_not_found(self):
         """Test getting a task that doesn't exist."""
         query = """
@@ -56,10 +57,10 @@ class TestGraphQLQueries:
             }
         }
         """
-        
+
         response = client.post("/graphql", json={"query": query})
         assert response.status_code == 200
-        
+
         data = response.json()
         assert "data" in data
         assert data["data"]["task"] is None
@@ -67,7 +68,7 @@ class TestGraphQLQueries:
 
 class TestGraphQLMutations:
     """Test GraphQL mutation operations."""
-    
+
     def test_create_task(self):
         """Test creating a new task."""
         mutation = """
@@ -84,20 +85,20 @@ class TestGraphQLMutations:
             }
         }
         """
-        
+
         response = client.post("/graphql", json={"query": mutation})
         assert response.status_code == 200
-        
+
         data = response.json()
         assert "data" in data
         assert "createTask" in data["data"]
-        
+
         task = data["data"]["createTask"]
         assert task["id"] == 1
         assert task["title"] == "Test Task"
         assert task["description"] == "This is a test task"
         assert task["completed"] is False
-    
+
     def test_get_task_after_creation(self):
         """Test getting a task after it's been created."""
         # First create a task
@@ -112,10 +113,10 @@ class TestGraphQLMutations:
             }
         }
         """
-        
+
         response = client.post("/graphql", json={"query": mutation})
         assert response.status_code == 200
-        
+
         # Then get the task
         query = """
         query {
@@ -127,20 +128,20 @@ class TestGraphQLMutations:
             }
         }
         """
-        
+
         response = client.post("/graphql", json={"query": query})
         assert response.status_code == 200
-        
+
         data = response.json()
         assert "data" in data
         assert "task" in data["data"]
-        
+
         task = data["data"]["task"]
         assert task["id"] == 1
         assert task["title"] == "Another Task"
         assert task["description"] == "Another test task"
         assert task["completed"] is True
-    
+
     def test_get_all_tasks_with_data(self):
         """Test getting all tasks when there are tasks in the list."""
         # First create two tasks
@@ -155,7 +156,7 @@ class TestGraphQLMutations:
             }
         }
         """
-        
+
         mutation2 = """
         mutation {
             createTask(taskInput: {
@@ -167,10 +168,10 @@ class TestGraphQLMutations:
             }
         }
         """
-        
+
         client.post("/graphql", json={"query": mutation1})
         client.post("/graphql", json={"query": mutation2})
-        
+
         # Now get all tasks
         query = """
         query {
@@ -182,25 +183,25 @@ class TestGraphQLMutations:
             }
         }
         """
-        
+
         response = client.post("/graphql", json={"query": query})
         assert response.status_code == 200
-        
+
         data = response.json()
         assert "data" in data
         assert "tasks" in data["data"]
-        
+
         tasks = data["data"]["tasks"]
         assert len(tasks) == 2
-        
+
         # Check first task
         assert tasks[0]["id"] == 1
         assert tasks[0]["title"] == "First Task"
-        
+
         # Check second task
         assert tasks[1]["id"] == 2
         assert tasks[1]["title"] == "Second Task"
-    
+
     def test_update_task(self):
         """Test updating an existing task."""
         # First create a task
@@ -215,9 +216,9 @@ class TestGraphQLMutations:
             }
         }
         """
-        
+
         client.post("/graphql", json={"query": mutation_create})
-        
+
         # Then update it
         mutation_update = """
         mutation {
@@ -232,20 +233,20 @@ class TestGraphQLMutations:
             }
         }
         """
-        
+
         response = client.post("/graphql", json={"query": mutation_update})
         assert response.status_code == 200
-        
+
         data = response.json()
         assert "data" in data
         assert "updateTask" in data["data"]
-        
+
         task = data["data"]["updateTask"]
         assert task["id"] == 1
         assert task["title"] == "Updated Task"
         assert task["description"] == "Original description"  # Should remain unchanged
         assert task["completed"] is True
-    
+
     def test_update_task_not_found(self):
         """Test updating a task that doesn't exist."""
         mutation = """
@@ -260,14 +261,14 @@ class TestGraphQLMutations:
             }
         }
         """
-        
+
         response = client.post("/graphql", json={"query": mutation})
         assert response.status_code == 200
-        
+
         data = response.json()
         assert "data" in data
         assert data["data"]["updateTask"] is None
-    
+
     def test_delete_task(self):
         """Test deleting an existing task."""
         # First create a task
@@ -282,24 +283,24 @@ class TestGraphQLMutations:
             }
         }
         """
-        
+
         client.post("/graphql", json={"query": mutation_create})
-        
+
         # Then delete it
         mutation_delete = """
         mutation {
             deleteTask(taskId: 1)
         }
         """
-        
+
         response = client.post("/graphql", json={"query": mutation_delete})
         assert response.status_code == 200
-        
+
         data = response.json()
         assert "data" in data
         assert "deleteTask" in data["data"]
         assert data["data"]["deleteTask"] is True
-        
+
         # Verify task is deleted by trying to get it
         query = """
         query {
@@ -308,13 +309,13 @@ class TestGraphQLMutations:
             }
         }
         """
-        
+
         response = client.post("/graphql", json={"query": query})
         assert response.status_code == 200
-        
+
         data = response.json()
         assert data["data"]["task"] is None
-    
+
     def test_delete_task_not_found(self):
         """Test deleting a task that doesn't exist."""
         mutation = """
@@ -322,10 +323,10 @@ class TestGraphQLMutations:
             deleteTask(taskId: 999)
         }
         """
-        
+
         response = client.post("/graphql", json={"query": mutation})
         assert response.status_code == 200
-        
+
         data = response.json()
         assert "data" in data
         assert "deleteTask" in data["data"]
@@ -334,12 +335,12 @@ class TestGraphQLMutations:
 
 class TestHealthCheck:
     """Test health check endpoint."""
-    
+
     def test_health_check(self):
         """Test the health check endpoint."""
         response = client.get("/health")
         assert response.status_code == 200
-        
+
         data = response.json()
         assert data["status"] == "healthy"
-        assert data["service"] == "TodoList GraphQL API" 
+        assert data["service"] == "TodoList GraphQL API"
