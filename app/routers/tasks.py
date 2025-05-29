@@ -143,4 +143,4 @@ async def delete_task(task_id: int) -> None:
         HTTPException: 404 if task is not found
     """
     task_service.delete_task_or_404(task_id)
-    return None 
+    return None

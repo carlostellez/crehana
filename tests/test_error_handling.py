@@ -330,4 +330,4 @@ class TestErrorHandlingComparison:
 
         print("\n=== GraphQL Error Response ===")
         print(f"Status Code: {graphql_response.status_code}")
-        print(f"Response: {graphql_data}") 
+        print(f"Response: {graphql_data}")
