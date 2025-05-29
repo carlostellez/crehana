@@ -1,26 +1,41 @@
-# Crehana TodoList GraphQL API
+Metadata-Version: 2.4
+Name: crehana-todolist
+Version: 1.0.0
+Summary: A comprehensive TodoList API with REST and GraphQL endpoints
+Author-email: Crehana <dev@crehana.com>
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Framework :: FastAPI
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
 
-A TodoList GraphQL API built with FastAPI and Strawberry GraphQL following modern development practices.
+# Crehana TodoList API
+
+A simple TodoList REST API built with FastAPI following the technical assessment requirements.
 
 ## 🚀 Features
 
-- **Complete GraphQL API** with queries and mutations for tasks
-- **Strawberry GraphQL** for type-safe GraphQL implementation
+- **Complete REST API** with all CRUD operations for tasks
 - **FastAPI** framework for high performance
-- **Clean Architecture** with separated layers (Models, Services, GraphQL)
+- **Clean Architecture** with separated layers (Models, Services, API)
 - **Comprehensive Testing** with pytest (unit and integration tests)
 - **Code Quality Tools** (flake8, black, isort)
 - **Docker & Docker Compose** for containerization
 - **In-memory data storage** for rapid prototyping
-- **GraphQL Playground** for interactive API exploration
+- **Automatic API documentation** with FastAPI
 - **Health checks** and monitoring endpoints
 - **CORS** support for frontend integration
 
 ## 🛠️ Tech Stack
 
-- **Backend**: FastAPI + Strawberry GraphQL
-- **GraphQL**: Strawberry GraphQL with type safety
-- **Architecture**: Clean Architecture (Models → Services → GraphQL)
+- **Backend**: FastAPI
+- **Architecture**: Clean Architecture (Models → Services → API)
 - **Data Storage**: In-memory (for development/prototyping)
 - **Testing**: pytest + httpx + pytest-cov
 - **Code Quality**: flake8 + black + isort + mypy
@@ -32,41 +47,6 @@ A TodoList GraphQL API built with FastAPI and Strawberry GraphQL following moder
 - Docker and Docker Compose installed
 - Python 3.8+ (for local development)
 - Git
-
-## 🐍 Python Version Compatibility
-
-This project supports the following Python versions:
-
-### ✅ Supported Versions
-- **Python 3.8** (minimum required)
-- **Python 3.9** 
-- **Python 3.10** 
-- **Python 3.11** (recommended)
-
-### 🎯 Recommendations
-- **For local development**: Python 3.10 or 3.11 (better performance and features)
-- **For production**: Python 3.11 (as used in Docker container)
-- **Minimum compatibility**: Python 3.8
-
-### 📦 Dependencies Compatibility
-All major dependencies support Python 3.8+:
-- FastAPI 0.104.1
-- Strawberry GraphQL 0.214.0
-- Pydantic 2.5.0
-- Uvicorn 0.24.0
-- pytest 7.4.3
-
-### ⚠️ Important Notes
-- **Python 3.12+**: May have compatibility issues with some dependencies
-- **Python < 3.8**: Not supported
-- The Docker container uses **Python 3.11-slim** for optimal performance
-
-### 🔍 Check Your Python Version
-```bash
-python --version
-# or
-python3 --version
-```
 
 ## 🚀 Quick Start
 
@@ -86,8 +66,7 @@ docker-compose up -d --build
 ```
 
 ### 3. Access the API
-- **GraphQL Playground**: http://localhost:8000/graphql
-- **FastAPI Documentation**: http://localhost:8000/docs
+- **REST API Documentation**: http://localhost:8000/docs
 - **ReDoc Documentation**: http://localhost:8000/redoc
 - **Health Check**: http://localhost:8000/health
 
@@ -97,21 +76,16 @@ docker-compose up -d --build
 crehana/
 ├── app/
 │   ├── __init__.py
-│   ├── main.py                 # FastAPI application with GraphQL
+│   ├── main.py                 # FastAPI application with REST endpoints
 │   ├── models/                 # Data models and Pydantic schemas
 │   │   ├── __init__.py
 │   │   └── task.py            # Task models and schemas
-│   ├── services/              # Business logic layer
-│   │   ├── __init__.py
-│   │   └── task_service.py    # Task business logic
-│   └── graphql/               # GraphQL layer
+│   └── services/              # Business logic layer
 │       ├── __init__.py
-│       ├── types.py           # GraphQL types and inputs
-│       ├── resolvers.py       # GraphQL queries and mutations
-│       └── schema.py          # GraphQL schema definition
+│       └── task_service.py    # Task business logic
 ├── tests/                      # Test suite
 │   ├── __init__.py
-│   ├── test_graphql.py        # Integration tests for GraphQL API
+│   ├── test_routes.py         # Integration tests for REST API
 │   └── test_services.py       # Unit tests for services
 ├── docker-compose.yml          # Docker services configuration
 ├── Dockerfile                  # Application container
@@ -135,49 +109,33 @@ crehana/
 - **Components**: TaskService
 - **Features**: CRUD operations, business rules, data validation
 
-### 3. **GraphQL Layer** (`app/graphql/`)
-- **Purpose**: GraphQL API with type-safe operations
-- **Components**: Types, Resolvers, Schema
-- **Features**: Query/mutation handling, type safety, introspection
+### 3. **API Layer** (`app/main.py`)
+- **Purpose**: REST API endpoints and HTTP handling
+- **Components**: FastAPI routes with dependency injection
+- **Features**: Request/response handling, error management, documentation
 
-### 4. **API Layer** (`app/main.py`)
-- **Purpose**: FastAPI application with GraphQL integration
-- **Components**: FastAPI app with Strawberry GraphQL router
-- **Features**: CORS, health checks, GraphQL playground
+## 📊 REST API Endpoints
 
-## 📊 GraphQL API Operations
+The API provides the following endpoints as required by the assessment:
 
-The API provides the following GraphQL operations:
+### Core Task Endpoints
+- `GET /tasks/` - Get all tasks
+- `POST /tasks/` - Create a new task
+- `GET /tasks/{id}/` - Get a task by ID
+- `PUT /tasks/{id}/` - Update a task by ID
+- `DELETE /tasks/{id}/` - Delete a task by ID
 
-### Queries
-- `tasks` - Get all tasks
-- `task(taskId: Int!)` - Get a task by ID
-
-### Mutations
-- `createTask(taskInput: TaskInput!)` - Create a new task
-- `updateTask(taskId: Int!, taskInput: TaskUpdateInput!)` - Update a task
-- `deleteTask(taskId: Int!)` - Delete a task
+### Additional Endpoints
+- `GET /health` - Health check endpoint
 
 ### Task Data Format
 Each task has the following structure:
-```graphql
-type Task {
-  id: Int!
-  title: String!
-  description: String!
-  completed: Boolean!
-}
-
-input TaskInput {
-  title: String!
-  description: String!
-  completed: Boolean = false
-}
-
-input TaskUpdateInput {
-  title: String
-  description: String
-  completed: Boolean
+```json
+{
+  "id": 1,
+  "title": "Sample Task",
+  "description": "This is a sample task",
+  "completed": false
 }
 ```
 
@@ -185,8 +143,8 @@ input TaskUpdateInput {
 
 ### 1. Create virtual environment
 ```bash
-python3.10 -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
 ### 2. Install dependencies
@@ -218,7 +176,7 @@ pytest --cov=app --cov-report=html --cov-report=term
 make test-cov
 
 # Run specific test file
-pytest tests/test_graphql.py
+pytest tests/test_routes.py
 pytest tests/test_services.py
 
 # Run tests in Docker
@@ -230,9 +188,9 @@ make docker-test
 ### Test Coverage
 The test suite includes:
 - **Unit tests** for TaskService class (`tests/test_services.py`)
-- **Integration tests** for all GraphQL operations (`tests/test_graphql.py`)
-- **Error handling tests** for non-existent resources
-- **CRUD operation tests** for all GraphQL mutations and queries
+- **Integration tests** for all REST API endpoints (`tests/test_routes.py`)
+- **Error handling tests** for 404 and validation errors
+- **CRUD operation tests** for all endpoints
 
 ### Test Configuration
 - Configuration in `pytest.ini`
@@ -304,7 +262,7 @@ make docker-down
 ```
 
 ### Docker Services
-- **web**: FastAPI application with GraphQL
+- **web**: FastAPI application
 
 ### Docker Commands
 ```bash
@@ -318,74 +276,47 @@ docker-compose exec web bash
 docker-compose exec web pytest
 ```
 
-## 📈 GraphQL Examples
+## 📈 API Examples
 
-### Query All Tasks
-```graphql
-query {
-  tasks {
-    id
-    title
-    description
-    completed
-  }
-}
+### Create a Task
+```bash
+curl -X POST "http://localhost:8000/tasks/" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "title": "Complete project documentation",
+       "description": "Write comprehensive documentation",
+       "completed": false
+     }'
 ```
 
-### Query Single Task
-```graphql
-query {
-  task(taskId: 1) {
-    id
-    title
-    description
-    completed
-  }
-}
+### Get All Tasks
+```bash
+curl -X GET "http://localhost:8000/tasks/"
 ```
 
-### Create Task
-```graphql
-mutation {
-  createTask(taskInput: {
-    title: "Complete project documentation"
-    description: "Write comprehensive documentation"
-    completed: false
-  }) {
-    id
-    title
-    description
-    completed
-  }
-}
+### Get Task by ID
+```bash
+curl -X GET "http://localhost:8000/tasks/1/"
 ```
 
 ### Update Task
-```graphql
-mutation {
-  updateTask(taskId: 1, taskInput: {
-    title: "Updated task title"
-    completed: true
-  }) {
-    id
-    title
-    description
-    completed
-  }
-}
+```bash
+curl -X PUT "http://localhost:8000/tasks/1/" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "title": "Updated task title",
+       "completed": true
+     }'
 ```
 
 ### Delete Task
-```graphql
-mutation {
-  deleteTask(taskId: 1)
-}
+```bash
+curl -X DELETE "http://localhost:8000/tasks/1/"
 ```
 
 ## 📈 Monitoring
 
 - **Health Check**: `GET /health`
-- **GraphQL Introspection**: Available through GraphQL playground
 - **Metrics**: Available through FastAPI metrics
 - **Logs**: Structured logging with Docker
 
@@ -420,31 +351,31 @@ Currently, the API uses in-memory data storage for rapid prototyping. Data will 
 4. Update services to use database operations
 5. Add database migrations with Alembic
 
-## 🎯 GraphQL Features
+## 🎯 Assessment Requirements Compliance
 
-This implementation provides:
+This project meets all the technical assessment requirements:
 
-### ✅ Core GraphQL Features
-- [x] **Type-safe Schema** - Complete GraphQL schema with Strawberry
-- [x] **Queries and Mutations** - Full CRUD operations via GraphQL
-- [x] **Input Validation** - Automatic validation through GraphQL types
-- [x] **Introspection** - Schema introspection for development tools
-- [x] **GraphQL Playground** - Interactive API exploration interface
-- [x] **Error Handling** - Proper GraphQL error responses
+### ✅ Core Requirements
+- [x] **RESTful API with FastAPI** - Complete REST API with all CRUD endpoints
+- [x] **CRUD Operations** - GET, POST, PUT, DELETE for tasks
+- [x] **Good Programming Practices** - Clean architecture, error handling, type hints
+- [x] **Unit and Integration Testing** - Comprehensive pytest test suite
+- [x] **Linting and Formatting** - flake8, black, isort configuration
+- [x] **Docker Configuration** - Dockerfile and docker-compose.yml
+- [x] **README Documentation** - Complete setup and usage instructions
 
-### 📊 Task Operations
-The API supports all standard task operations through GraphQL:
-- ✅ Create tasks with validation
-- ✅ Read single task or all tasks
-- ✅ Update tasks with partial updates
-- ✅ Delete tasks with confirmation
-- ✅ Type-safe operations with Strawberry
+### 📊 Task Format Compliance
+The API uses the exact task format specified in the assessment:
+- ✅ `id` - Unique task identifier
+- ✅ `title` - Task title
+- ✅ `description` - Task description
+- ✅ `completed` - Boolean completion status
 
-### 🔧 Development Features
-- ✅ Hot reload during development
-- ✅ Comprehensive test suite for GraphQL operations
-- ✅ Code quality tools integration
-- ✅ Docker containerization
+### 🔧 Error Handling
+- ✅ 404 errors for non-existent tasks
+- ✅ 422 errors for validation failures
+- ✅ Proper HTTP status codes
+- ✅ Detailed error messages
 
 ## 🤝 Contributing
 
